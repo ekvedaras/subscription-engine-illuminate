@@ -1,0 +1,8 @@
+parameters:
+  level: 9
+  treatPhpDocTypesAsCertain: false
+  paths:
+    - src
+
+includes:
+    - vendor/larastan/larastan/extension.neon
