@@ -12,7 +12,8 @@
     "require": {
         "php": ">=8.3",
         "wwwision/subscription-engine": "@dev",
-        "psr/clock": "^1"
+        "psr/clock": "^1",
+        "webmozart/assert": "^2.1"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
