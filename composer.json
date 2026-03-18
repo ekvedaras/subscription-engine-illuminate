@@ -17,10 +17,10 @@
     "require-dev": {
         "roave/security-advisories": "dev-latest",
         "phpstan/phpstan": "^2",
-        "squizlabs/php_codesniffer": "^4.0.x-dev",
+        "squizlabs/php_codesniffer": "^4.0.1",
         "phpunit/phpunit": "^11",
         "brianium/paratest": "^7",
-        "orchestra/testbench": "^9.0|^v10.0",
+        "orchestra/testbench": "^v10.0|^v11.0.0",
         "larastan/larastan": "^2|^3"
     },
     "autoload": {
