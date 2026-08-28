@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Connection;
 use Illuminate\Database\SQLiteConnection;
+use Illuminate\Support\Collection;
 use Psr\Clock\ClockInterface;
 use RuntimeException;
 use stdClass;
@@ -38,9 +39,19 @@ final readonly class IlluminateSubscriptionStore implements SubscriptionStore
         // see database/migrations
     }
 
+    public function findByCriteria(SubscriptionCriteria $criteria): Subscriptions
+    {
+        return self::toSubscriptions($this->queryByCriteria($criteria)->get());
+    }
+
     public function findByCriteriaForUpdate(SubscriptionCriteria $criteria): Subscriptions
     {
-        $rows = $this->connection
+        return self::toSubscriptions($this->queryByCriteria($criteria)->lockForUpdate()->get());
+    }
+
+    private function queryByCriteria(SubscriptionCriteria $criteria): Builder
+    {
+        return $this->connection
             ->table($this->tableName)
             ->orderBy('id')
             ->when($criteria->ids, function (Builder $query, SubscriptionIds $ids) {
@@ -48,10 +59,12 @@ final readonly class IlluminateSubscriptionStore implements SubscriptionStore
             })
             ->when($criteria->status, function (Builder $query, SubscriptionStatusFilter $statuses) {
                 $query->whereIn('status', $statuses->toStringArray());
-            })
-            ->lockForUpdate()
-            ->get();
+            });
+    }
 
+    /** @param Collection<int, stdClass> $rows */
+    private static function toSubscriptions(Collection $rows): Subscriptions
+    {
         if ($rows->isEmpty()) {
             return Subscriptions::none();
         }
